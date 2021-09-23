@@ -7,6 +7,39 @@ local tonumber = tonumber
 local pairs = pairs
 local table_size = table_size
 
+--- Creates and returns a table array with either an element or the return value of a function repeated n times
+-- @param elementOrFunction <any> if a function is passed and has an argument, the current index being filled is passed.
+-- Otherwise, the value itself will be used
+-- @param n <number> the amount of times to repeat
+function table.repeat_element(elementOrFunction, n)
+    local table = {}
+    local f = (type(elementOrFunction) == 'function') and elementOrFunction or function ()
+        return elementOrFunction
+    end
+
+    for i = 1, n do
+        table[i] = f(i)
+    end
+
+    return table
+end
+
+--- Enumerates over the passed table joining each table found into a new table. Can be used with table.repeat_element to create readable data structures.
+--- Note: multivals could be used to make both this and repeat_element cleaner, but they seriously suck so they're being avoided purposefully
+-- @param tables <table> array of tables to join together
+-- @returns <table> table 
+function table.join_tables(tables)
+    local table = {}
+
+    for k, tbl in pairs(tables) do
+        for k, v in pairs(tbl) do
+            table[#table + 1] = v
+        end
+    end
+
+    return table
+end
+
 --- Searches a table to remove a specific element without an index
 -- @param t <table> to search
 -- @param <any> table element to search for
